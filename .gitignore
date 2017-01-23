@@ -90,3 +90,6 @@ ENV/
 
 # My Private Info
 PrivateResource.py
+
+# Config files
+*.conf
