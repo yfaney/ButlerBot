@@ -10,16 +10,8 @@ import WeatherUG
 
 from utils.configmanager import ConfigManager
 
-
-
-MY_TOKEN = PrivateResource.MY_TOKEN
 #BUTLER_NAME = PrivateResource.BUTLER_NAME
 #BUTLER_EMOJI = PrivateResource.BUTLER_EMOJI
-CHATROOM_ID = PrivateResource.CHATROOM_ID
-ICLOUD_ID = PrivateResource.ICLOUD_ID
-ICLOUD_PW = PrivateResource.ICLOUD_PW
-ZIPCODE = PrivateResource.ZIPCODE
-
 #bot.set_username(BUTLER_NAME)
 #bot.set_emoji(":%s:" % BUTLER_EMOJI)
 
@@ -28,12 +20,12 @@ def send_message(message):
 
 
 def get_today_agenda():
-    agenda = client.get_today_agenda()
+    agenda = iclient.get_today_agenda()
     #agenda = client.get_this_month_schedule()
     return agenda
 
 def get_tomorrow_agenda():
-    agenda = client.get_tomorrow_agenda()
+    agenda = iclient.get_tomorrow_agenda()
     return agenda
 
 def gen_greeting(night=False):
@@ -55,11 +47,11 @@ def gen_agenda_message(night=False):
     else:
         agenda = get_today_agenda()
         mdate = u"오늘"
-    msgs = []
     if agenda is None or len(agenda) == 0:
         return u"%s은 특별한 일정이 없습니다." % mdate
     else:
-        msgs.append(u"%s 일정을 말씀드리겠습니다.\n" % mdate)
+        start_msg = u"%s 일정을 말씀드리겠습니다." % mdate
+    msgs = []
     first_item = True
     count = 1
     for item in agenda:
@@ -77,10 +69,10 @@ def gen_agenda_message(night=False):
             msgs.append(u"있으시고,")
         count = count +1
     msgs.append(u"있으십니다.")
-    return " ".join(msgs)
+    return "%s\n%s" % (start_msg, " ".join(msgs))
 
 def populate_weather(wtext):
-    popul = {"Partly Cloudy": u"약간 흐릴", "Overcast": u"흐릴", "Sunny": u"맑을", "Rainy": u"비가 올", "Snowy": u"눈이 올"}
+    popul = {"Partly Cloudy": u"약간 흐릴", "Mostly Cloudy": u"많이 흐릴", "Overcast": u"흐릴", "Sunny": u"맑을", "Rainy": u"비가 올", "Snowy": u"눈이 올", "Clear": u"맑을"}
     try:
         return popul[wtext]
     except Exception,e:
@@ -90,12 +82,12 @@ def gen_forecast(night=False):
     try:
         if(night):
             mdate = u"내일"
-            overall = WeatherUG.getWeeklyFC_Overall(ZIPCODE, 1)
+            overall = WeatherUG.getWeeklyFC_Overall(zipcode, 1)
             qpf_day = None
         else:
             mdate = u"오늘"
-            overall = WeatherUG.getWeeklyFC_Overall(ZIPCODE, 0)
-            qpf_day = WeatherUG.getHourlyFC_QPF(ZIPCODE)
+            overall = WeatherUG.getWeeklyFC_Overall(zipcode, 0)
+            qpf_day = WeatherUG.getHourlyFC_QPF(zipcode)
     except Exception, e:
         print "Exception %s with message '%s' occurred." % (type(e), str(e))
         return ""
@@ -125,6 +117,7 @@ if __name__ == "__main__":
     msg = ConfigManager("messages.conf").parse()
 
     iclient = icloud_client.iclient(config["iCloud"]["ID"], config["iCloud"]["PW"])
+    zipcode = config["WeatherUG"]["Zipcode"]
     bot = SlackBot.SlackBot(config["Slack"]["Token"])
 
     bot_msg.append(gen_greeting(DAY_OR_NIGHT))
@@ -134,4 +127,4 @@ if __name__ == "__main__":
 
     for m in bot_msg:
         #print m
-        bot.send_message(config["Slack"]["ChatroomID", m)
+        bot.send_message(config["Slack"]["ChatroomID"], m)
