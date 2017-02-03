@@ -11,10 +11,10 @@ class iclient:
         return self._api.calendar.events(mdate, mdate)
 
     def get_today_agenda(self):
-        return self.get_agenda(datetime.today(), datetime.today())
+        return self.get_agenda(datetime.today())
 
     def get_tomorrow_agenda(self):
-        return self.get_agenda(datetime.today() + timedelta(1), datetime.today() + timedelta(1))
+        return self.get_agenda(datetime.today() + timedelta(1))
 
     def get_this_month_schedule(self):
         return self._api.calendar.events()
