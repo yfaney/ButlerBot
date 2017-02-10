@@ -31,9 +31,10 @@ class SlackBot:
             self._client.api_call("chat.postMessage",channel=receipt,text=text,
                                   username=self._username, icon_emoji=self._emoji)
 
-    def upload_file(self, receipt, filepath):
+    def upload_file(self, receipt, filepath, message):
         requrl = make_url("files.upload",token=self._token,
-                          filename=filepath,filetype="png")
+                          filename=filepath,filetype="png",
+                          initial_comment=message)
         if self._username is None or self._emoji is None:
             data= {"channels":[receipt], "as_user":True}
         else:
