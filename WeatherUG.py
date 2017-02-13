@@ -30,7 +30,7 @@ def getHourlyFC_QPF(zipcode):
     forecastJson = respJson['hourly_forecast']
     qpf = []
     for item in forecastJson:
-        if int(item["qpf"]["metric"]) > 0:
+        if float(item["qpf"]["metric"]) > 0:
             qpf.append({"hour":int(item["FCTIME"]["hour_padded"]), "qpf":float(item["qpf"]["metric"])})
     return qpf
 
