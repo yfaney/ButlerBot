@@ -6,7 +6,7 @@ if sys.version_info[0] < 3:
     from ConfigParser import ConfigParser
 else:
     # Python 3 uses this module
-    from configParser import ConfigParser
+    from configparser import ConfigParser
 
 
 class ConfigManager:
@@ -45,4 +45,3 @@ class ConfigManager:
                     cfg_item[item[0]] = item[1]
             info[section] = cfg_item
         return info
-

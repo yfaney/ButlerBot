@@ -1,5 +1,5 @@
 from slackclient import SlackClient
-from urllib import urlencode
+from urllib.parse import urlencode
 import requests
 SLACK_API_URL = "https://slack.com/api/%s?%s"
 
