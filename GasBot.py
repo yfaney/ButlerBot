@@ -72,6 +72,8 @@ if __name__ == "__main__":
     slack_chatroom_id = config["Slack"]["ChatroomID"]
     telegram_chatroom_id = config["Telegram"]["ChatroomID"]
     zipcode = config["Location"]["zipcode"]
+    zipcode_work = config["WorkLocation"]["zipcode"]
+    zipcode_dt = config["DowntownLocation"]["zipcode"]
     grade = config["Gas"]["Grade"]
 
     gas_price_stats = get_gas_price_stats(zipcode, grade)
@@ -82,6 +84,24 @@ if __name__ == "__main__":
 
     if gas_price_stats is not None:
         msg.append("현재 가솔린 최저가는 %s, 평균가는 %s" % (gas_price_stats[0], gas_price_stats[1]))
+
+    lowest_gas_home = get_gas_prices(zipcode,grade)
+    if lowest_gas_home is not None:
+        if gas_price_stats is not None:
+            msg.append("이고,")
+        msg.append("집근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_home[0]["Name"], lowest_gas_home[0]["Price"], lowest_gas_home[0]["Address"]))
+
+    lowest_gas_work = get_gas_prices(zipcode_work,grade)
+    if lowest_gas_work is not None:
+        if gas_price_stats is not None:
+            msg.append("이고,")
+        msg.append("회사 근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_work[0]["Name"], lowest_gas_work[0]["Price"], lowest_gas_work[0]["Address"]))
+
+    lowest_gas_dt = get_gas_prices(zipcode_dt,grade)
+    if lowest_gas_dt is not None:
+        if gas_price_stats is not None:
+            msg.append("이고,")
+        msg.append("Overland Park 근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_dt[0]["Name"], lowest_gas_dt[0]["Price"], lowest_gas_dt[0]["Address"]))
 
     lowest_gas_home = get_gas_prices(zipcode,grade)
     if lowest_gas_home is not None:
