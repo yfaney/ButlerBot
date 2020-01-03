@@ -5,6 +5,7 @@ import re, requests, json
 import sys
 
 import SlackBot
+import telegram
 
 from utils.configmanager import ConfigManager
 
@@ -38,7 +39,9 @@ if __name__ == "__main__":
     config = ConfigManager("settings.conf").parse()
 
     bot = SlackBot.SlackBot(config["Slack"]["Token"])
+    tbot = telegram.Bot(token=config["Telegram"]["Token"])
     slack_chatroom_id = config["Slack"]["ChatroomID"]
+    telegram_chatroom_id = config["Telegram"]["ChatroomID"]
     zipcode = config["Location"]["zipcode"]
 
     vehicle_list = check_inventory(zipcode, PICKNPULL_BMW3S)
@@ -54,5 +57,6 @@ if __name__ == "__main__":
         payload = "주인님, PickNPull에 재고가 있습니다.\n%s" % '\n'.join(list_msg)
         print(payload)
         bot.send_message(slack_chatroom_id, payload)
+        tbot.send_message(chat_id=telegram_chatroom_id, text=payload)
     else:
         print("No vehicles available at this point.")
