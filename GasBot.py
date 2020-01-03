@@ -8,7 +8,7 @@ from babel import Locale
 import sys
 
 import SlackBot
-import telegram
+import TelegramBot
 
 from utils.configmanager import ConfigManager
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     config = ConfigManager("settings.conf").parse()
 
     bot = SlackBot.SlackBot(config["Slack"]["Token"])
-    tbot = telegram.Bot(token=config["Telegram"]["Token"])
+    tbot = TelegramBot.TelegramBot(token=config["Telegram"]["Token"])
     slack_chatroom_id = config["Slack"]["ChatroomID"]
     telegram_chatroom_id = config["Telegram"]["ChatroomID"]
     zipcode = config["Location"]["zipcode"]
@@ -114,4 +114,4 @@ if __name__ == "__main__":
         payload = ' '.join(msg)
         bot.send_message(slack_chatroom_id, "<!here|here>")
         bot.send_message(slack_chatroom_id, payload)
-        tbot.send_message(chat_id=telegram_chatroom_id, text=payload)
+        tbot.send_message(telegram_chatroom_id, payload)
