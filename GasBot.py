@@ -25,6 +25,12 @@ GAS_BUDDY_HTTP_HEADERS = {
     'Content-Type': 'text/html'
 }
 
+def build_google_map_url(address):
+    return "https://www.google.com/maps/search/%s" % (address.replace(" ", "+"))
+
+def build_markdown_map_link(address):
+    return "[%s](%s)" % (address, build_google_map_url(address))
+
 def convert_class_delimiter(el_class, del_from, del_to):
     return del_to.join(el_class.split(del_from))
 
@@ -88,30 +94,24 @@ if __name__ == "__main__":
     lowest_gas_home = get_gas_prices(zipcode,grade)
     if lowest_gas_home is not None:
         if gas_price_stats is not None:
-            msg.append("이고,")
-        msg.append("집근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_home[0]["Name"], lowest_gas_home[0]["Price"], lowest_gas_home[0]["Address"]))
+            msg.append("이고,\n")
+        msg.append("집근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_home[0]["Name"], lowest_gas_home[0]["Price"], build_markdown_map_link(lowest_gas_home[0]["Address"])))
 
     lowest_gas_work = get_gas_prices(zipcode_work,grade)
     if lowest_gas_work is not None:
         if gas_price_stats is not None:
-            msg.append("이고,")
-        msg.append("회사 근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_work[0]["Name"], lowest_gas_work[0]["Price"], lowest_gas_work[0]["Address"]))
+            msg.append("이고,\n")
+        msg.append("회사근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_work[0]["Name"], lowest_gas_work[0]["Price"], build_markdown_map_link(lowest_gas_work[0]["Address"])))
 
     lowest_gas_dt = get_gas_prices(zipcode_dt,grade)
     if lowest_gas_dt is not None:
         if gas_price_stats is not None:
-            msg.append("이고,")
-        msg.append("Overland Park 근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_dt[0]["Name"], lowest_gas_dt[0]["Price"], lowest_gas_dt[0]["Address"]))
-
-    lowest_gas_home = get_gas_prices(zipcode,grade)
-    if lowest_gas_home is not None:
-        if gas_price_stats is not None:
-            msg.append("이고,")
-        msg.append("집근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_home[0]["Name"], lowest_gas_home[0]["Price"], lowest_gas_home[0]["Address"]))
+            msg.append("이고,\n")
+        msg.append("OP 근처 가솔린 최저가는 %s에서 %s, 주소는 %s" % (lowest_gas_dt[0]["Name"], lowest_gas_dt[0]["Price"], build_markdown_map_link(lowest_gas_dt[0]["Address"])))
 
     if gas_price_stats is not None or lowest_gas_home is not None:
         msg.append("입니다.")
         payload = ' '.join(msg)
         bot.send_message(slack_chatroom_id, "<!here|here>")
         bot.send_message(slack_chatroom_id, payload)
-        tbot.send_message(telegram_chatroom_id, payload)
+        tbot.send_markdown_message(telegram_chatroom_id, payload)
