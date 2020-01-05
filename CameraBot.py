@@ -1,8 +1,4 @@
-#!/usr/local/bin/python
-
-import re, requests
-from datetime import datetime
-from babel import Locale
+#!/usr/local/bin/python3
 
 import sys
 
